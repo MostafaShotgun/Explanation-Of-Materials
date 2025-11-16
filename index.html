@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Meta & SEO -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="منصة أسئلة وأجوبة تفاعلية متعددة المواد مع ترقيم، بحث، ووضع ليلي." />
+    <title>منصة الأسئلة والأجوبة</title>
+
+    <!-- Google Fonts: Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- CSS -->
+    <style>
+        /* === CSS Custom Properties === */
+        :root {
+            --primary: #3f5b8a;
+            --primary-dark: #2e4570;
+            --accent: #8a3fc7;
+            --success: #38a558;
+            --warning: #ffb300;
+            --danger: #e91e63;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #2a3344;
+            --text-light: #555;
+            --border: #e2e8f0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+            --gap: 1.5rem;
+
+            --level1-bg: #f5f7fc; --level1-border: #3f5b8a;
+            --level2-bg: #faf3ff; --level2-border: #8a3fc7;
+            --level3-bg: #effff1; --level3-border: #38a558;
+            --level4-bg: #fff8e1; --level4-border: #ffb300;
+            --level5-bg: #ffeef0; --level5-border: #e91e63;
+        }
+
+        [data-theme="dark"] {
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text: #e0e0e0;
+            --text-light: #bbbbbb;
+            --border: #333;
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            --primary: #5d7bb0;
+            --primary-dark: #4a6391;
+
+            --level1-bg: #2a3b5c; --level1-border: #5d7bb0;
+            --level2-bg: #4a2b5e; --level2-border: #a569d1;
+            --level3-bg: #2b5e3a; --level3-border: #5ac77a;
+            --level4-bg: #5e4a2b; --level4-border: #ffcc5c;
+            --level5-bg: #5e2b3a; --level5-border: #ff6b8e;
+        }
+
+        /* === Global === */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            padding: 2rem 1rem;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* === Header === */
+        header {
+            text-align: center;
+            margin-bottom: var(--gap);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            background: var(--primary);
+            padding: 1rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: inline-block;
+            min-width: 280px;
+            transition: var(--transition);
+        }
+
+        .stats {
+            margin-top: 0.8rem;
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        /* === Controls === */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: var(--gap);
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-box, .select-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-box input, .select-wrapper select {
+            width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--card-bg);
+            color: var(--text);
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .search-box input:focus, .select-wrapper select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(63, 91, 138, 0.2);
+        }
+
+        .search-box::before {
+            content: "ج";
+            position: absolute;
+            right: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        .select-wrapper::after {
+            content: "↓";
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+            color: var(--text-light);
+            pointer-events: none;
+        }
+
+        .btn {
+            padding: 0.75rem 1.2rem;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        .btn-outline:hover { background: var(--border); }
+
+        /* === Question Card === */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border-right: 6px solid var(--primary);
+            box-shadow: var(--shadow);
+            margin-bottom: var(--gap);
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .question-header {
+            padding: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, transparent 0%, rgba(63, 91, 138, 0.05) 100%);
+            position: relative;
+        }
+
+        .question-number {
+            background: var(--primary);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-left: 1rem;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--text);
+            flex: 1;
+            padding-left: 1rem;
+        }
+
+        .toggle-icon {
+            font-size: 1.4rem;
+            transition: transform 0.3s ease;
+        }
+
+        .question-card.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .answer-container {
+            padding: 0 1.2rem 1.2rem;
+            max-height: 5000px;
+            opacity: 1;
+            transition: all 0.4s ease;
+        }
+
+        .question-card.collapsed .answer-container {
+            max-height: 0;
+            opacity: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .answer-content {
+            margin-top: 1rem;
+        }
+
+        .nested-card {
+            background: var(--level1-bg);
+            padding: 1rem;
+            border-radius: var(--radius);
+            border-right: 4px solid var(--level1-border);
+            margin-bottom: 0.8rem;
+            font-size: 1.05rem;
+            color: var(--text);
+        }
+
+        .nested-card.level-2 { background: var(--level2-bg); border-right-color: var(--level2-border); }
+        .nested-card.level-3 { background: var(--level3-bg); border-right-color: var(--level3-border); }
+        .nested-card.level-4 { background: var(--level4-bg); border-right-color: var(--level4-border); }
+        .nested-card.level-5 { background: var(--level5-bg); border-right-color: var(--level5-border); font-style: italic; }
+
+        .nested-list { margin-top: 0.8rem; padding-right: 1.5rem; }
+
+        /* === Loading & Messages === */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: var(--radius);
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .error-msg, .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: #e74c3c;
+            font-weight: 500;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        /* === Back to Top === */
+        #back-to-top {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 999;
+        }
+
+        #back-to-top.show { opacity: 1; visibility: visible; }
+
+        /* === Print === */
+        @media print {
+            .controls, #back-to-top, .toggle-icon { display: none !important; }
+            .question-card { border: 1px solid #ccc; page-break-inside: avoid; margin-bottom: 1rem; }
+            .question-card.collapsed .answer-container { display: block !important; max-height: none !important; }
+        }
+
+        /* === Responsive === */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.6rem; }
+            .controls { flex-direction: column; align-items: stretch; }
+            .search-box, .select-wrapper { min-width: 100%; }
+            .question-text { font-size: 1.2rem; }
+            .question-number { width: 32px; height: 32px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- Header -->
+        <header>
+            <h1 id="page-title">منصة الأسئلة والأجوبة</h1>
+            <div class="stats" id="stats">جاري التحميل...</div>
+        </header>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="select-wrapper">
+                <select id="subject-select" aria-label="اختر المادة">
+                    <option value="">-- اختر المادة --</option>
+                </select>
+            </div>
+            <div class="search-box">
+                <input type="text" id="search" placeholder="ابحث في الأسئلة..." aria-label="بحث" />
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-outline" id="toggle-theme">ليلي</button>
+                <button class="btn btn-outline" onclick="window.print()">طباعة</button>
+            </div>
+        </div>
+
+        <!-- Questions -->
+        <main id="questions-container">
+            <div class="question-card skeleton" style="height: 120px; margin-bottom: 1.5rem;"></div>
+            <div class="question-card skeleton" style="height: 180px; margin-bottom: 1.5rem;"></div>
+        </main>
+
+        <p class="no-results" id="no-results" style="display: none;">لا توجد أسئلة تطابق بحثك.</p>
+        <p class="error-msg" id="error-msg" style="display: none;"></p>
+    </div>
+
+    <!-- Back to Top -->
+    <div id="back-to-top" aria-label="العودة إلى الأعلى">↑</div>
+
+    <!-- JavaScript -->
+    <script defer>
+        // === Config: Add your subjects here ===
+        const SUBJECTS = [
+            { file: 'questions1.json', name: 'مصادر الالتزام', color: '#e74c3c' },
+            { file: 'questions2.json', name: 'مصادر ', color: '#27ae60' },            
+        ];
+
+        // === DOM Elements ===
+        const container = document.getElementById('questions-container');
+        const subjectSelect = document.getElementById('subject-select');
+        const searchInput = document.getElementById('search');
+        const statsEl = document.getElementById('stats');
+        const errorMsg = document.getElementById('error-msg');
+        const noResults = document.getElementById('no-results');
+        const themeBtn = document.getElementById('toggle-theme');
+        const backToTop = document.getElementById('back-to-top');
+        const pageTitle = document.getElementById('page-title');
+
+        let allQuestions = [];
+        let currentSubject = null;
+        const MAX_DEPTH = 6;
+
+        // === Populate Subject Dropdown ===
+        SUBJECTS.forEach(sub => {
+            const opt = document.createElement('option');
+            opt.value = sub.file;
+            opt.textContent = sub.name;
+            opt.dataset.color = sub.color;
+            subjectSelect.appendChild(opt);
+        });
+
+        // === Theme Toggle ===
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        themeBtn.textContent = savedTheme === 'dark' ? 'نهاري' : 'ليلي';
+
+        themeBtn.addEventListener('click', () => {
+            const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeBtn.textContent = newTheme === 'dark' ? 'نهاري' : 'ليلي';
+        });
+
+        // === Extract Full Answer Text ===
+        function extractAnswerText(answer, depth = 0) {
+            if (typeof answer === 'string') return '• ' + answer.trim();
+            if (Array.isArray(answer)) {
+                return answer.map(item => {
+                    if (typeof item === 'string') return '• ' + item.trim();
+                    const indent = '  '.repeat(depth + 1);
+                    const sub = item.sub ? extractAnswerText(item.sub, depth + 1) : '';
+                    return `${indent}• ${item.text.trim()}\n${sub}`;
+                }).filter(Boolean).join('\n');
+            }
+            return '';
+        }
+
+        // === Render Nested Answer ===
+        function renderAnswer(answer, parent, depth = 1) {
+            if (depth > MAX_DEPTH) {
+                const p = document.createElement('p');
+                p.textContent = 'المحتوى عميق جدًا.';
+                p.style.color = '#e74c3c';
+                parent.appendChild(p);
+                return;
+            }
+
+            if (typeof answer === 'string') {
+                const p = document.createElement('p');
+                p.textContent = '• ' + answer;
+                parent.appendChild(p);
+                return;
+            }
+
+            if (Array.isArray(answer)) {
+                answer.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = `nested-card level-${depth}`;
+                    if (typeof item === 'string') {
+                        div.textContent = item;
+                    } else {
+                        div.textContent = item.text;
+                        if (item.sub && item.sub.length > 0) {
+                            const subList = document.createElement('div');
+                            subList.className = 'nested-list';
+                            renderAnswer(item.sub, subList, depth + 1);
+                            div.appendChild(subList);
+                        }
+                    }
+                    parent.appendChild(div);
+                });
+            }
+        }
+
+        // === Create Question Card ===
+        function createQuestionCard(qData, index) {
+            const card = document.createElement('article');
+            card.className = 'question-card';
+            card.dataset.question = qData.question.toLowerCase();
+
+            const fullText = `${qData.question}\n\n${extractAnswerText(qData.answer)}`;
+
+            card.innerHTML = `
+                <div class="question-header" role="button" tabindex="0" aria-expanded="true">
+                    <span class="question-number">${index + 1}</span>
+                    <div class="question-text">${qData.question}</div>
+                    <span class="toggle-icon">إخفاء</span>
+                </div>
+                <div class="answer-container">
+                    <div class="answer-content"></div>
+                </div>
+            `;
+
+            const header = card.querySelector('.question-header');
+            const content = card.querySelector('.answer-content');
+            const icon = card.querySelector('.toggle-icon');
+
+            const toggle = () => {
+                card.classList.toggle('collapsed');
+                const expanded = !card.classList.contains('collapsed');
+                header.setAttribute('aria-expanded', expanded);
+                icon.textContent = expanded ? 'إخفاء' : 'إظهار';
+            };
+
+            header.addEventListener('click', toggle);
+            header.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggle();
+                }
+            });
+
+            renderAnswer(qData.answer, content);
+            return card;
+        }
+
+        // === Render Questions ===
+        function renderQuestions(questions) {
+            container.innerHTML = '';
+            if (!questions || questions.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            }
+            noResults.style.display = 'none';
+            questions.forEach((q, i) => container.appendChild(createQuestionCard(q, i)));
+        }
+
+        // === Load Subject ===
+        async function loadSubject(file) {
+            if (!file) return;
+            container.innerHTML = '<div class="question-card skeleton" style="height: 120px; margin-bottom: 1.5rem;"></div><div class="question-card skeleton" style="height: 180px; margin-bottom: 1.5rem;"></div>';
+            errorMsg.style.display = 'none';
+
+            try {
+                const res = await fetch(file + '?t=' + Date.now());
+                if (!res.ok) throw new Error(`فشل التحميل: ${res.status}`);
+                const data = await res.json();
+                if (!Array.isArray(data)) throw new Error('البيانات غير صالحة');
+
+                allQuestions = data;
+                renderQuestions(data);
+                statsEl.textContent = `تم تحميل ${data.length} سؤال`;
+
+                const sub = SUBJECTS.find(s => s.file === file);
+                if (sub) {
+                    document.documentElement.style.setProperty('--primary', sub.color);
+                    document.documentElement.style.setProperty('--primary-dark', darkenColor(sub.color, 20));
+
+                    pageTitle.textContent = `${sub.name} - الأسئلة والأجوبة`;
+                }
+            } catch (err) {
+                errorMsg.textContent = `خطأ: ${err.message}`;
+                errorMsg.style.display = 'block';
+                statsEl.textContent = 'فشل التحميل';
+            }
+        }
+
+        // === Darken Color Helper ===
+        function darkenColor(color, percent) {
+            const num = parseInt(color.replace("#", ""), 16),
+                  amt = Math.round(2.55 * percent),
+                  R = (num >> 16) - amt,
+                  G = (num >> 8 & 0x00FF) - amt,
+                  B = (num & 0x0000FF) - amt;
+            return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+        }
+
+        // === Search Filter ===
+        function filterQuestions() {
+            const term = searchInput.value.trim().toLowerCase();
+            const filtered = term === '' ? allQuestions : allQuestions.filter(q => q.question.toLowerCase().includes(term));
+            renderQuestions(filtered);
+            if (filtered.length > 0) {
+                container.querySelector('.question-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // === Events ===
+        subjectSelect.addEventListener('change', (e) => {
+            currentSubject = e.target.value;
+            loadSubject(currentSubject);
+            searchInput.value = '';
+            filterQuestions();
+        });
+
+        searchInput.addEventListener('input', filterQuestions);
+
+        window.addEventListener('scroll', () => {
+            backToTop.classList.toggle('show', window.scrollY > 500);
+        });
+
+        backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        // === Init ===
+        document.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.slice(1);
+            const initialFile = hash && SUBJECTS.find(s => s.file === hash) ? hash : SUBJECTS[0]?.file;
+            if (initialFile) {
+                subjectSelect.value = initialFile;
+                loadSubject(initialFile);
+            }
+        });
+    </script>
+</body>
+</html>
