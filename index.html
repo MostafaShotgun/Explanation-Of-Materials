@@ -472,15 +472,18 @@
             const fullText = `${qData.question}\n\n${extractAnswerText(qData.answer)}`;
 
             card.innerHTML = `
-                <div class="question-header" role="button" tabindex="0" aria-expanded="true">
+                <div class="question-header" role="button" tabindex="0" aria-expanded="false">
                     <span class="question-number">${index + 1}</span>
                     <div class="question-text">${qData.question}</div>
-                    <span class="toggle-icon">إخفاء</span>
+                    <span class="toggle-icon">إظهار</span>
                 </div>
                 <div class="answer-container">
                     <div class="answer-content"></div>
                 </div>
             `;
+
+            
+            card.classList.add('collapsed');
 
             const header = card.querySelector('.question-header');
             const content = card.querySelector('.answer-content');
@@ -593,5 +596,4 @@
         });
     </script>
 </body>
-
 </html>
